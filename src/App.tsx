@@ -12,11 +12,20 @@ function App() {
   const [word, setWord] = useState("");
   const [synonyms, setSynonyms] = useState<Synonym[]>([]);
 
-  const handleFetchSynonyms = (e: React.FormEvent) => {
-    e.preventDefault();
+  const fetchSynonyms = (word: string) => {
     fetch(`${API_URL}/words?rel_syn=${word}`)
     .then((response) => response.json())
     .then(setSynonyms);
+  }
+
+  const handleFetchSynonyms = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchSynonyms(word);
+  }
+
+  const handleSynonymClicked = (newWord: string) => {
+    setWord(newWord);
+    fetchSynonyms(newWord);
   }
 
   return (
@@ -34,7 +43,9 @@ function App() {
 
         <ul>
           {synonyms.map((synonym) => (
-            <li key={synonym.word}>{synonym.word}</li> 
+            <li 
+            onClick={() => handleSynonymClicked(synonym.word)}
+            key={synonym.word}>{synonym.word}</li> 
             ))}
         </ul>
       </div>
