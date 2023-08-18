@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { fetchSynonyms } from "./api/fetchSynonyms";
 import "./App.css";
 
 type Synonym = {
@@ -6,26 +7,18 @@ type Synonym = {
   score: number;
 }
 
-const API_URL = `https://api.datamuse.com`
-
 function App() {
   const [word, setWord] = useState("");
   const [synonyms, setSynonyms] = useState<Synonym[]>([]);
 
-  const fetchSynonyms = (word: string) => {
-    fetch(`${API_URL}/words?rel_syn=${word}`)
-    .then((response) => response.json())
-    .then(setSynonyms);
-  }
-
   const handleFetchSynonyms = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchSynonyms(word);
+    fetchSynonyms(word).then(setSynonyms);
   }
 
   const handleSynonymClicked = (newWord: string) => {
     setWord(newWord);
-    fetchSynonyms(newWord);
+    fetchSynonyms(newWord).then(setSynonyms);
   }
 
   return (
