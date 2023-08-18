@@ -1,25 +1,20 @@
 import { useState } from "react";
-import { fetchSynonyms } from "./api/fetchSynonyms";
 import "./App.css";
-
-type Synonym = {
-  word: string;
-  score: number;
-}
+import { useGetSynonyms } from "./hooks/useGetSynonyms";
 
 function App() {
   const [word, setWord] = useState("");
-  const [synonyms, setSynonyms] = useState<Synonym[]>([]);
+  const { isLoading, synonyms, getSynonyms } = useGetSynonyms();
 
   const handleFetchSynonyms = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchSynonyms(word).then(setSynonyms);
-  }
+    getSynonyms(word);
+  };
 
   const handleSynonymClicked = (newWord: string) => {
     setWord(newWord);
-    fetchSynonyms(newWord).then(setSynonyms);
-  }
+    getSynonyms(newWord);
+  };
 
   return (
     <>
@@ -34,13 +29,20 @@ function App() {
           <button>Submit</button>
         </form>
 
-        <ul>
-          {synonyms.map((synonym) => (
-            <li 
-            onClick={() => handleSynonymClicked(synonym.word)}
-            key={synonym.word}>{synonym.word}</li> 
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <ul>
+            {synonyms.map((synonym) => (
+              <li
+                onClick={() => handleSynonymClicked(synonym.word)}
+                key={synonym.word}
+              >
+                {synonym.word}
+              </li>
             ))}
-        </ul>
+          </ul>
+        )}
       </div>
     </>
   );
