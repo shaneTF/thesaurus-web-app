@@ -1,18 +1,20 @@
 import { useState } from "react";
 import "./App.css";
 
-type Synonyms = {
+type Synonym = {
   word: string;
   score: number;
 }
 
+const API_URL = `https://api.datamuse.com`
+
 function App() {
   const [word, setWord] = useState("");
-  const [synonyms, setSynonyms] = useState<Synonyms[]>([]);
+  const [synonyms, setSynonyms] = useState<Synonym[]>([]);
 
   const handleFetchSynonyms = (e: React.FormEvent) => {
     e.preventDefault();
-    fetch(`https://api.datamuse.com/words?rel_syn=fast`)
+    fetch(`${API_URL}/words?rel_syn=${word}`)
     .then((response) => response.json())
     .then(setSynonyms);
   }
@@ -29,6 +31,12 @@ function App() {
           ></input>
           <button>Submit</button>
         </form>
+
+        <ul>
+          {synonyms.map((synonym) => (
+            <li key={synonym.word}>{synonym.word}</li> 
+            ))}
+        </ul>
       </div>
     </>
   );
